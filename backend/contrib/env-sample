@@ -1,0 +1,23 @@
+DEBUG=True
+SECRET_KEY=Your_secret_key
+ALLOWED_HOSTS=localhost, 127.0.0.1
+
+#------------- Database
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/testdb
+# DATABASE_URL=<protocolo postgres>://<usuario>:<senha>@<endereço ip>:<porta>/<nome_do_banco>
+
+#-------------AWS
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_STORAGE_BUCKET_NAME=
+INTERNAL_IPS=127.0.0.1
+
+#-------------Sentry
+SENTRY_DSN=
+
+#---------SMTP with anymail and mailgun
+EMAIL_BACKEND=anymail.backends.mailgun.EmailBackend
+DEFAULT_FROM_EMAIL=
+SERVER_EMAIL=
+MAILGUN_API_KEY=
+MAILGUN_SENDER_DOMAIN=

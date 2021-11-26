@@ -1,0 +1,45 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+python-decouple = "*"
+dj-database-url = "*"
+psycopg2-binary = "*"
+gunicorn = "*"
+
+# S3
+django-s3-folder-storage = "*"
+collectfast = "*"
+
+# Logs
+sentry-sdk = "*"
+
+# Email with mailgun
+django-anymail = "*"
+
+# Drf
+djangorestframework = "*"
+djoser = "*"
+
+# Security and permissions
+django-axes = "*"
+django-role-permissions = "*"
+
+# Other optional packages
+django-cpf-cnpj = "*"
+
+[dev-packages]
+# pytest = "*"
+# pytest-mock = "*"
+# pytest-django = "*"
+# model-bakery = "*"
+# pytest-cov = "*"
+ipython = "*"
+django-extensions = "*"
+neovim = "*"
+
+[requires]
+python_version = "3.9"
