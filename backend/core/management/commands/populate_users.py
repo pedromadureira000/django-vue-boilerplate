@@ -17,7 +17,6 @@ class Command(BaseCommand):
                 last_name=faker.last_name(),
                 email=faker.email(),
                 password='',
-                is_ambassador=True
             )
             user.set_password('1234')
             user.save()

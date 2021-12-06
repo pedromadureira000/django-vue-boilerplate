@@ -67,7 +67,7 @@ class LoginView(APIView):
 
     def post(self, request, format=None):
         if request.user.is_authenticated:
-            return Response({"status": "already_authenticated"})
+            return Response({"status": "already_authenticated."})
         email = request.data.get('email')
         password = request.data.get('password')
         if not email:
@@ -150,8 +150,7 @@ class ProfilePasswordView(APIView):
 class CheckAuthenticatedView(APIView):
     def get(self, request, format=None):
         try:
-            return Response({'first_name': request.user.first_name, 'last_name': request.user.last_name, 
-                'email': request.user.email, 'modules': [{"title": "reports", "icon":"mdi-clipboard-list-outline", "to": "/reports"}]})
+            return Response({'first_name': request.user.first_name, 'last_name': request.user.last_name, 'email': request.user.email, 'modules': [{"title": "reports", "icon":"mdi-clipboard-list-outline", "to": "/reports"}]}, status=status.HTTP_200_OK)
         except:
             return Response({'status': 'error', 'description': 'Something went wrong when checking authentication status.'}, 
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR)
