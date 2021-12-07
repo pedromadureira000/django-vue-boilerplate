@@ -9,6 +9,7 @@ export default async (ctx) => {
 		}
 		const token = csrftoken.split("=")[1];
 		ctx.store.commit('auth/setCsrfOnServer', token) 
+		// ctx.store.commit('toggleDrawer') 
 
 		const sessionid = ctx.req.headers.cookie
 			.split(";")
