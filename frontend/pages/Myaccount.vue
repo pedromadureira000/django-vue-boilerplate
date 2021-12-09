@@ -25,18 +25,6 @@
           <v-text-field label="Email" type="email" v-model="email" disabled />
         </div>
         <v-btn color="primary" type="submit">Save</v-btn>
-        <p class="typo__p" v-if="submitProfileStatus === 'OK'">
-          Thanks for your submission!
-        </p>
-        <p class="typo__p" v-if="submitProfileStatus === 'ERROR'">
-          Please fill the form correctly.
-        </p>
-        <p class="typo__p" v-if="submitProfileStatus === 'PENDING'">
-          Sending...
-        </p>
-        <p class="typo__p" v-if="submitProfileStatus === 'SERVER ERROR'">
-          Server Error 
-        </p>
       </form>
 
       <h3 class="mt-4">Change Password</h3>
@@ -74,18 +62,6 @@
           />
         </div>
         <v-btn color="primary" type="submit">Save</v-btn>
-        <p class="typo__p" v-if="submitPasswordStatus === 'OK'">
-          Thanks for your submission!
-        </p>
-        <p class="typo__p" v-if="submitPasswordStatus === 'ERROR'">
-          Please fill the form correctly.
-        </p>
-        <p class="typo__p" v-if="submitPasswordStatus === 'PENDING'">
-          Sending...
-        </p>
-        <p class="typo__p" v-if="submitPasswordStatus === 'SERVER ERROR'">
-          Server Error 
-        </p>
       </form>
     </div>
   </div>
@@ -99,6 +75,7 @@ import {
   maxLength,
 } from "vuelidate/lib/validators";
 import { validationMixin } from "vuelidate";
+import axios from '~/plugins/axios'
 
 export default {
 	middleware: ['authenticated'],
@@ -111,8 +88,6 @@ export default {
       current_password: "",
       password: "",
       password_confirm: "",
-      submitProfileStatus: null,
-      submitPasswordStatus: null,
     };
   },
   validations: {
@@ -143,47 +118,13 @@ export default {
 
   methods: {
     infoSubmit() {
-      this.$v.profileGroup.$touch();
-      if (this.$v.profileGroup.$invalid) {
-        this.submitProfileStatus = "ERROR";
-      } else {
-        this.submitProfileStatus = "PENDING";
-        this.$axios({ 
-				method: "put",
-				url: "/api/user/profile",
-				data:{
-					first_name: this.first_name,
-					last_name: this.last_name,
-				}
-				  }).then((request) => {
-            this.$store.dispatch("auth/setUser", request.data)
-            setTimeout(() => {
-              this.submitProfileStatus = "OK";
-            }, 2500);
-            }).catch(()=> {
-              this.submitProfileStatus = "SERVER ERROR"
-              })
-      }
+			this.$store.dispatch('auth/profileUpdate', {
+				first_name: this.first_name,
+				last_name: this.last_name,
+			})
     },
     passwordSubmit() {
-      this.$v.passwordUpdateGroup.$touch();
-      if (this.$v.passwordUpdateGroup.$invalid) {
-        this.submitPasswordStatus = "ERROR";
-      } else {
-        this.submitPasswordStatus = "PENDING";
-        this.$axios.put("/api/user/profilepassword", {
-          current_password: this.current_password,
-          password: this.password,
-          }).then(() => {
-
-            this.submitPasswordStatus = "OK";
-            setTimeout(() => {
-              this.$router.push('/login')
-            }, 500);
-            }).catch(()=> {
-              this.submitPasswordStatus = "SERVER ERROR"
-              })
-        }
+			this.$store.dispatch('auth/updatePassword', {password: this.password, current_password: this.current_password})
     },
   },
   computed: {
@@ -215,6 +156,7 @@ export default {
       !this.$v.password.required && errors.push("Password is required.");
       !this.$v.password.maxLength && errors.push("This field must have up to 20 characters.");
       !this.$v.password.minLength && errors.push("This field must have at least 6 characters.");
+      this.password === this.current_password && errors.push("The password should not be equal to the current password.")
       return errors;
     },
     passConfirmErrors() {
@@ -227,4 +169,8 @@ export default {
   }
 }
 </script>
-<style scoped lang="sass"></style>
+<style scoped>
+.v-application .mb-3 {
+    margin-bottom: 0px !important;
+}
+</style>

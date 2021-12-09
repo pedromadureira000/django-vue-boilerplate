@@ -1,6 +1,11 @@
 import colors from 'vuetify/es5/util/colors'
 
+const _isdev = process.env.DEV
+const _apimock = process.env.API_MOCK 
+const _apijs = _apimock ? 'apimock' : 'api'
+
 export default {
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - frontend',
@@ -15,7 +20,7 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.jpg' }
     ]
   },
 
@@ -26,9 +31,8 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
 		// {src: '@/plugins/axios', ssr: false},
-		'@/plugins/axios',
-		'@/plugins/vuetify',
 		// '@/plugins/axios',
+		'@/plugins/vuetify',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -45,17 +49,13 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
+		'@nuxtjs/axios',
 		'@nuxtjs/proxy',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
 	axios: {
-		credentials: true,
-			
-		// common: {
-			// "X-CSRFToken": ""
-		// },
+		// credentials: true,
 	},
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -78,11 +78,21 @@ export default {
     }
   },
 
-  // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {
-  },
+	// Build Configuration: https://go.nuxtjs.dev/config-build
+	build: {
+		//You can extend webpack config here
+		// loaders: {
+			// sass: {
+				// implementation: require('sass'),
+			// },
+		// },
+		extend (config, ctx) {
+			const home = config.resolve.alias['~']
+			config.resolve.alias['~api'] = home + '/helpers/' + _apijs
+		}
+	},
 
-	proxy: process.env.DEV ? {
+	proxy: _isdev ? {
 		'/api': 'http://127.0.0.1:8000/',
 	} : null,
 
@@ -91,9 +101,13 @@ export default {
 	],
 
 	env: {
-		test: process.env.test || 'test'
+		// test: process.env.test || 'test'
 	},
 	
 	outputDir: "../backend/core/templates",
 	assetsDir: "../static",
+
+  // router: {
+    // middleware: ['fwdcookies', 'auth']
+  // },
 }

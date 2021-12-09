@@ -1,3 +1,5 @@
+import api from '~api'
+
 export default async (ctx) => {
 		// A middleware can be asynchronous. To do this return a  Promise or use async/await.
 	if (process.server && ctx.req.headers.cookie){
@@ -9,7 +11,6 @@ export default async (ctx) => {
 		}
 		const token = csrftoken.split("=")[1];
 		ctx.store.commit('auth/setCsrfOnServer', token) 
-		// ctx.store.commit('toggleDrawer') 
 
 		const sessionid = ctx.req.headers.cookie
 			.split(";")
@@ -17,17 +18,12 @@ export default async (ctx) => {
 		if (!sessionid) {
 			return;
 		}
-
-		// await ctx.store.dispatch("auth/checkAuthenticated");  // ==> this will no work. Will add user after retrive the page
-
-		await ctx.app.$axios.get("/api/user/checkauth").then((response) => {
-			console.log('user is authenticated!')
-			ctx.store.commit("auth/SET_USER", response.data);
-		}).catch((error) => {
-			console.log("not Authenticated")
-			console.log(error)
-		});
+		let data = await api.checkAuthenticated()	
+		if (!data['some_error']){
+			console.log(data)
+			ctx.store.commit('auth/SET_USER', data )	
+		} else {
+			console.log(data)
+		}
 	}
-
 }
-

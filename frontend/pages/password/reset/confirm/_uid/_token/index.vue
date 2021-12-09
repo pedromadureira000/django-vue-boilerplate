@@ -24,8 +24,6 @@
           />
         </div>
         <v-btn color="primary" type="submit">Save</v-btn>
-
-        <h4 class="mt-3">{{ message }}</h4>
       </form>
   </div>
 </template>
@@ -38,10 +36,10 @@ import {
   minLength,
   maxLength,
 } from "vuelidate/lib/validators";
-import axios from "axios";
 
 export default {
   mixins: [validationMixin],
+	/* layout: ['passwordReset'], */
   validations: {
     password: {
       required,
@@ -56,7 +54,6 @@ export default {
     return {
       password: "",
       password_confirm: "",
-      message: ""
     };
   },
   computed: {
@@ -78,23 +75,11 @@ export default {
   },
   methods: {
     passwordResetConfirm() {
-      axios({
-        method: "post",
-        url: "/api/user/passwordreset/users/reset_password_confirm/",
-        data: { new_password: this.password, token: this.$route.params.token, uid: this.$route.params.uid},
-      })
-        .then(() => {
-          this.message = "The password was been changed"
-          setTimeout(() => {
-            this.message = "";
-          }, 2500);
-        })
-        .catch(() => {
-          this.message = "Server error. The email was not been sent.";
-          setTimeout(() => {
-            this.message = "";
-          }, 2500);
-        });
+			this.$store.dispatch('auth/passwordResetConfirm', {
+				new_password: this.password, 
+				token: this.$route.params.token, 
+				uid: this.$route.params.uid
+			})
     }
   },
 };

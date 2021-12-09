@@ -137,7 +137,8 @@ class ProfilePasswordView(APIView):
         if user.check_password(data.get('current_password')):
             user.set_password(data['password'])
             user.save()
-            return Response(UserSerializer(user).data)
+            #  return Response(UserSerializer(user).data)
+            return Response({"status": "Password updated"})
         return Response({"status": "passwords don't match"},status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -156,9 +157,8 @@ class CheckAuthenticatedView(APIView):
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class PasswordResetView(APIView):
-    permission_classes = (permissions.AllowAny,)
+#  class PasswordResetView(APIView):
+    #  permission_classes = (permissions.AllowAny,)
 
-    def get(self, request, format=None):
-        return Response({"status": "email has been sent."})
- #  passowordReset
+    #  def get(self, request, format=None):
+        #  return Response({"status": "email has been sent."})

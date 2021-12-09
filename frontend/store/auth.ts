@@ -22,30 +22,123 @@ export const state = (): UserState => ({
 })  
 
 // ---------------------------/actions
-import {ActionTree, Commit} from "vuex"
+import {ActionTree, Commit, Dispatch} from "vuex"
 import {RootState} from "@/store/index"
+import api from '~/helpers/api'
 
 export const actions: ActionTree<UserState, RootState> = {
-	setUser({commit}: {commit: Commit}, user: User) {
-		commit("SET_USER", user);
-	},
-	checkAuthenticated({commit, state}: {commit: Commit, state: UserState}) {
-		this.$axios.get("/api/user/checkauth").then((response) => {
-			console.log("the user is already authenticated");
-			commit("SET_USER", response.data);
-		}).catch(() => {
-			console.log("not Authenticated")
-			if (state.currentUser) {
-				commit("deleteUser");
+
+	// setUser({commit}: {commit: Commit}, user: User) {
+		// commit("SET_USER", user);
+	// },
+
+// ------/API
+	
+	async checkAuthenticated({commit, state}: {commit: Commit, state: UserState}) {
+			let data: any = await api.checkAuthenticated()
+			console.log(data)
+			if (data['some_error']){
+				console.log("not Authenticated")
+				if (state.currentUser) {
+					commit("deleteUser");
+				}
 			}
-		});
+			commit("SET_USER", data);
 	},
+
 	getCsrf({commit}: {commit: Commit}) {
-		this.$axios.get("/api/user/getcsrf").then(() => {
+		let data: any = api.getCsrf() 
+		if (data === 'ok') {
 			console.log("Csrftoken recived");
 			commit("setCsrf");
-		});
+		} else if (data === 'error'){
+			console.log('error')	
+		}
 	},
+
+	async login({commit, dispatch, state}: {commit: Commit, dispatch: Dispatch, state: UserState}, payload: any){
+		payload['csrftoken'] = state.csrftoken
+		try {
+			let data = await api.login(payload)
+			console.log(data)
+			commit("SET_USER", data);
+			commit("setCsrf");
+			dispatch('setAlert', {message: "Logged in with success.", alertType: 'success'}, { root: true })
+		} catch(e){
+			console.log('error when trying to login: ', e)
+			dispatch('setAlert', {message: "Login Failed", alertType: 'error'}, { root: true })
+			// return 'not ok'
+		}
+	},
+	
+	async logout({commit}: {commit: Commit}){
+		let data = await api.logout()
+		console.log(data)
+		if (data === 'ok'){
+			commit("deleteUser");
+			this.$router.push('/')
+		} else if (data === 'error'){
+			console.log('error when trying to log out')
+		}
+	},
+
+	async profileUpdate({commit, dispatch}: {commit: Commit, dispatch: Dispatch,}, payload: any){
+		try {
+		let data = await api.updateProfile(payload)
+		console.log('>>',data)
+		commit('SET_USER', data )
+		dispatch('setAlert', {message: "Your profile has been updated.", alertType: 'success'}, { root: true })
+		}
+		catch(e){
+			console.log('error in profileUpdate action: ', e);
+			dispatch('setAlert', {message: "Something get wrong when trying to update profile.", alertType: 'error'}, { root: true })
+		}
+	},
+
+	async updatePassword({commit, dispatch}: {commit: Commit, dispatch: Dispatch,}, payload: any){
+		try {
+			let data = await api.updatePassword(payload)
+			console.log('>>>>>>>>>>', data)
+			commit('deleteUser')
+			dispatch('setAlert', {message: "Your password has been updated.", alertType: 'success'}, { root: true })
+			setTimeout(() => {
+				this.$router.push('/login')
+			}, 600);
+		}
+		catch(e){
+			console.log('error in updatePassword action: ', e);
+			dispatch('setAlert', {message: "Something get wrong when trying to update password.", alertType: 'error'}, { root: true })
+		}
+	},
+
+	async passwordReset({commit, dispatch}: {commit: Commit, dispatch: Dispatch,}, payload: any){
+		try {
+			await api.passwordReset(payload)
+			dispatch('setAlert', {message: "Email has been sent", alertType: 'success'}, { root: true })
+		}
+		catch(e){
+			dispatch('setAlert', {message: "Something get wrong, the email was not been sent.", alertType: 'error'}, { root: true })
+		}
+	},
+
+	async passwordResetConfirm({dispatch}: {dispatch: Dispatch,}, payload: any){
+		try {
+			let data: any = await api.passwordResetConfirm(payload)
+			if (data['error']){
+				if (data.message === 'Invalid token for given user.'){
+					dispatch('setAlert', {message: "This link is invalid." , alertType: 'error'}, { root: true })
+				} else {
+					dispatch('setAlert', {message: data.message , alertType: 'error'}, { root: true })
+				}
+			} else{
+				dispatch('setAlert', {message: "The password was been changed", alertType: 'success'}, { root: true })
+			}
+		}
+		catch(e){
+			console.log('>>>>>>>>>>', e)	
+			dispatch('setAlert', {message: "Something get wrong, the password was not been changed.", alertType: 'error'}, { root: true })
+		}
+	}
 }
 
 
