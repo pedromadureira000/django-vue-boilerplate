@@ -2,14 +2,13 @@ import axios from '~/plugins/axios'
 
 export default {
 	async checkAuthenticated(){
-		// return await axios.get("/api/user/checkauth").then((data)=> {return data.data}).catch((error) => {return {some_error: error}})
-		return await axios.get("/api/user/checkauth").then((data)=> {return data.data}).catch((error) => {return {some_error: error.response.data}})
+		return await axios.get("/api/user/checkauth").then((data)=> {return data.data})
 	},
+
 	async getCsrf(){
-		return await axios.get("/api/user/getcsrf").then(() => {
-			return 'ok'
-	 }).catch(() => { return 'error'})
+		return await axios.get("/api/user/getcsrf").then(() => {})
 	},
+
 	async login(payload){ 
 		return await axios({
 			method: "post",
@@ -21,18 +20,13 @@ export default {
 				return response.data
 			})
 		},	
+
 	async logout(){
 		return await axios({
 				method: "post",
 				url: "/api/user/logout",
 			})
-				.then(() => {
-					return 'ok'
-				})
-				.catch(() => {
-					console.log("logout error");
-					return 'error'
-				});
+				.then(() => {})
 		},
 	async updateProfile(payload){
 		return await axios({ 
@@ -58,11 +52,11 @@ export default {
 					return request.data 
 				})
 	},
-	async passwordReset(payload){
+	async passwordReset(email){
       return await axios({
         method: "post",
         url: "/api/user/passwordreset/users/reset_password/",
-        data: { email: payload },
+        data: { email: email},
       })
         .then(() => {})
 	},

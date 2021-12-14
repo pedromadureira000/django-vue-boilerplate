@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["reports"],{c11b:function(t,e,n){"use strict";n.r(e);var r=function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("p",[t._v("reports")])},o=[],s={data:function(){return{}},methods:{}},u=s,c=n("2877"),a=Object(c["a"])(u,r,o,!1,null,null,null);e["default"]=a.exports}}]);
-//# sourceMappingURL=reports.266ddd95.js.map

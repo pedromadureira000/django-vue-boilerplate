@@ -39,7 +39,7 @@ import {
 
 export default {
   mixins: [validationMixin],
-	/* layout: ['passwordReset'], */
+	layout: 'resetpassword', 
   validations: {
     password: {
       required,

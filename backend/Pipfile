@@ -9,9 +9,6 @@ python-decouple = "*"
 dj-database-url = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
-# S3
-django-s3-folder-storage = "*"
-collectfast = "*"
 # Logs
 sentry-sdk = "*"
 # Email with mailgun

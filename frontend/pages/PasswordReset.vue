@@ -24,7 +24,7 @@ import { required, email } from "vuelidate/lib/validators";
 
 export default {
   mixins: [validationMixin],
-	/* layout: ['passwordReset'], */
+	layout: 'resetpassword', 
   validations: {
     email: { required, email },
   },

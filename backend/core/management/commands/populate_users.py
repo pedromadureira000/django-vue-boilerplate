@@ -1,10 +1,9 @@
 from django.core.management import BaseCommand
 from django.db import connections
 from django.db.utils import OperationalError
-import time
-
 from faker import Faker
 from core.models import User
+import time
 
 
 class Command(BaseCommand):

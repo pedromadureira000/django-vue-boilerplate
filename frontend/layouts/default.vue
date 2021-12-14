@@ -53,7 +53,7 @@
 				<template v-slot:activator="{ on }">
 					<v-btn icon v-on="on" class="ma-0 ml-5">
 						<v-avatar size="45px">
-							<img src="https://graph.facebook.com/4/picture?width=300&height=300">
+							<img src="~assets/images/default_user.jpg">
 						</v-avatar>
 					</v-btn>
 				</template>
@@ -62,7 +62,7 @@
 						<v-list-item>
 							<v-list-item-avatar>
 								<v-avatar>
-									<img src="https://graph.facebook.com/4/picture?width=400&height=400">
+									<img src="~assets/images/default_user.jpg">
 								</v-avatar>
 							</v-list-item-avatar>
 							<v-list-item-content>
@@ -97,17 +97,20 @@
 		{{$store.state.alert.alertMessage}}
 		</v-alert>
 
+		<le-footer/>
   </v-app>
 </template>
 
 <script>
+import footer from '~/components/Footer.vue';
 import loginDialog from '~/components/login-dialog.vue'
 
 export default {
 	name: "default",
 	middleware: ['fwdcookies', 'auth'],
   components: {
-    loginDialog
+    loginDialog,
+    leFooter: footer
   },
 
 	data: () => ({
@@ -151,7 +154,7 @@ export default {
 	left: 50%;
 	top: 93%;
 	transform: translate(-50%, -50%);
-  opacity: 0.8;
+	z-index: 99999999;
 }
 .v-application .pa-3 {
 	padding: 14px !important;

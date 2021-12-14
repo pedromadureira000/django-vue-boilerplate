@@ -3,6 +3,7 @@ import colors from 'vuetify/es5/util/colors'
 const _isdev = process.env.DEV
 const _apimock = process.env.API_MOCK 
 const _apijs = _apimock ? 'apimock' : 'api'
+// import pt from 'vuetify/es5/locale/pt'
 
 export default {
 
@@ -23,6 +24,8 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.jpg' }
     ]
   },
+
+  loading: { color: '#fff' },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
@@ -48,8 +51,6 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://go.nuxtjs.dev/axios
-		'@nuxtjs/axios',
 		'@nuxtjs/proxy',
   ],
 
@@ -75,7 +76,11 @@ export default {
           success: colors.green.accent3
         }
       }
-    }
+    },
+    // lang: {
+      // locales: { pt },
+      // current: 'pt'
+    // },
   },
 
 	// Build Configuration: https://go.nuxtjs.dev/config-build
@@ -92,7 +97,7 @@ export default {
 		}
 	},
 
-	proxy: _isdev ? {
+	proxy: _isdev && !_apimock ? {
 		'/api': 'http://127.0.0.1:8000/',
 	} : null,
 
@@ -104,9 +109,6 @@ export default {
 		// test: process.env.test || 'test'
 	},
 	
-	outputDir: "../backend/core/templates",
-	assetsDir: "../static",
-
   // router: {
     // middleware: ['fwdcookies', 'auth']
   // },

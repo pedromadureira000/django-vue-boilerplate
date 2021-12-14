@@ -24,35 +24,31 @@ export const state = (): UserState => ({
 // ---------------------------/actions
 import {ActionTree, Commit, Dispatch} from "vuex"
 import {RootState} from "@/store/index"
-import api from '~/helpers/api'
+ // @ts-ignore: This module is dynamically added in nuxt.config.js
+import api from '~api'
 
 export const actions: ActionTree<UserState, RootState> = {
-
-	// setUser({commit}: {commit: Commit}, user: User) {
-		// commit("SET_USER", user);
-	// },
 
 // ------/API
 	
 	async checkAuthenticated({commit, state}: {commit: Commit, state: UserState}) {
+		try {
 			let data: any = await api.checkAuthenticated()
 			console.log(data)
-			if (data['some_error']){
-				console.log("not Authenticated")
-				if (state.currentUser) {
-					commit("deleteUser");
-				}
-			}
 			commit("SET_USER", data);
+		} catch (error) {
+			console.log(error);
+		}	
 	},
 
 	getCsrf({commit}: {commit: Commit}) {
-		let data: any = api.getCsrf() 
-		if (data === 'ok') {
+		try {
+			let data: any = api.getCsrf() 
 			console.log("Csrftoken recived");
 			commit("setCsrf");
-		} else if (data === 'error'){
-			console.log('error')	
+			
+		} catch (error) {
+			console.log(error)	
 		}
 	},
 
@@ -71,14 +67,16 @@ export const actions: ActionTree<UserState, RootState> = {
 		}
 	},
 	
-	async logout({commit}: {commit: Commit}){
+	async logout({commit, dispatch}: {commit: Commit, dispatch: Dispatch}){
+		try {
 		let data = await api.logout()
 		console.log(data)
-		if (data === 'ok'){
-			commit("deleteUser");
-			this.$router.push('/')
-		} else if (data === 'error'){
-			console.log('error when trying to log out')
+		commit("deleteUser");
+		dispatch('setAlert', {message: "Logged out in with success.", alertType: 'success'}, { root: true })
+		this.$router.push('/')
+		} catch (error) {
+			console.log('error when trying to log out: ', error )
+			//>>>>>>>>>>>>>>>>>>>>>>TODO<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		}
 	},
 
@@ -102,7 +100,7 @@ export const actions: ActionTree<UserState, RootState> = {
 			commit('deleteUser')
 			dispatch('setAlert', {message: "Your password has been updated.", alertType: 'success'}, { root: true })
 			setTimeout(() => {
-				this.$router.push('/login')
+				this.$router.push('/')
 			}, 600);
 		}
 		catch(e){

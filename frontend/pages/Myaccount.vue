@@ -75,11 +75,11 @@ import {
   maxLength,
 } from "vuelidate/lib/validators";
 import { validationMixin } from "vuelidate";
-import axios from '~/plugins/axios'
 
 export default {
 	middleware: ['authenticated'],
   mixins: [validationMixin],
+
   data() {
     return {
 			first_name: this.$store.state.auth.currentUser.first_name,
@@ -90,6 +90,7 @@ export default {
       password_confirm: "",
     };
   },
+
   validations: {
     first_name: {
       required,
@@ -118,10 +119,16 @@ export default {
 
   methods: {
     infoSubmit() {
-			this.$store.dispatch('auth/profileUpdate', {
-				first_name: this.first_name,
-				last_name: this.last_name,
-			})
+			if (
+				this.first_name === this.$store.state.auth.currentUser.first_name &&
+				this.last_name === this.$store.state.auth.currentUser.last_name
+			){ this.$store.dispatch('setAlert', {message: "You must change some field to update profile.", alertType: 'warning'}, { root: true }) }
+			else {
+				this.$store.dispatch('auth/profileUpdate', {
+					first_name: this.first_name,
+					last_name: this.last_name,
+				})
+			}	
     },
     passwordSubmit() {
 			this.$store.dispatch('auth/updatePassword', {password: this.password, current_password: this.current_password})
