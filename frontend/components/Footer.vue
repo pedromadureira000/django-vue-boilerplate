@@ -24,6 +24,6 @@ export default {
 </script>
 <style scoped>
 .v-footer {
-	z-index: 99;
+	z-index: 42;
 } 
 </style>

@@ -1,6 +1,9 @@
 import api from '~api'
 
 export default async (ctx) => {
+	if (process.env.API_MOCK){
+		console.log(">>>>>>> 'API_MOCK'")
+	}
 		// A middleware can be asynchronous. To do this return a  Promise or use async/await.
 	if (process.server && ctx.req.headers.cookie){
 		let csrftoken = ctx.req.headers.cookie
@@ -18,12 +21,13 @@ export default async (ctx) => {
 		if (!sessionid) {
 			return;
 		}
-		let data = await api.checkAuthenticated()	
-		if (!data['some_error']){
+		try {
+			let data = await api.checkAuthenticated()	
 			console.log(data)
 			ctx.store.commit('auth/SET_USER', data )	
-		} else {
-			console.log(data)
+		}
+		catch (error) {
+			console.log('>>>> error: ', error)
 		}
 	}
 }

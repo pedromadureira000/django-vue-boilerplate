@@ -2,20 +2,12 @@
   <v-app>
 		<v-navigation-drawer v-model="drawer" app> 
       <v-card class="pa-3" color="blue-grey darken-4" tile>
-				<!--
-        <v-avatar size="70" class="mb-2">
-          <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
-        </v-avatar>
-        <div class="white--text text-subtitle-1 font-weight-bold">
-          Pedro Henrique
-        </div>
-				-->
 				<v-btn @click.prevent="$store.dispatch('auth/checkAuthenticated')">test</v-btn>
       </v-card>
 
       <v-list nav dense>
         <v-list-item
-          v-for="item in menuItems"
+          v-for="item in currentMenuItems"
           :key="item.title"
           :to="item.to"
           link
@@ -90,8 +82,9 @@
       <nuxt/>
     </v-main>
 
+    <login-dialog ref="login_dialog"/>
 
-    <login-dialog ref="login_dialog" />
+    <session-error-dialog/>
 
 		<v-alert v-if='$store.state.alert.showAlert' :type='$store.state.alert.alertType' style="width: 50%;" class="alert_message">
 		{{$store.state.alert.alertMessage}}
@@ -104,21 +97,31 @@
 <script>
 import footer from '~/components/Footer.vue';
 import loginDialog from '~/components/login-dialog.vue'
+import sessionErrorDialog from '~/components/session-error-dialog.vue'
 
 export default {
 	name: "default",
 	middleware: ['fwdcookies', 'auth'],
   components: {
     loginDialog,
+		sessionErrorDialog,
     leFooter: footer
   },
 
 	data: () => ({
     drawer: null,
+		defaultMenuItems: [
+			{ title: "Home", icon: "mdi-home", to: "/" },
+			{ title: "About", icon: "mdi-help-box", to: "/about" },
+		],
+		allUserModules: [
+			{"name": "reports", "title": "Reports", "icon":"mdi-clipboard-list-outline", "to": "/reports"},
+			{"name": "admin", "title": "Admin", "icon":"mdi-account-tie", "to": "/admin"}	
+		]
 	}),
 
   methods: {
-    open_login_dialog (evt) {
+    open_login_dialog(evt) {
       this.$refs.login_dialog.open()
       evt.stopPropagation()
     },
@@ -131,18 +134,17 @@ export default {
 		logged_user(){
 			return this.$store.state.auth.currentUser
 		},
-		menuItems() {
+		currentMenuItems() {
 			let user = this.$store.state.auth.currentUser;
-				let menu = this.$store.state.menuItems;
-				if (user) {
-					/* return MenuItems array with 'About' menuItems in the end. */
-					return menu
-						.slice(0, 1)
-						.concat(user.modules)
-						.concat(menu.slice(1, 2));
-				} else {
-					return this.$store.state.menuItems;
-				}
+			if (user) {
+				/* return defultMenuItems array concatenated with user modules with 'About' in the end. */
+				return this.defaultMenuItems
+					.slice(0, 1)
+					.concat(this.allUserModules.filter(module => this.$store.state.auth.currentUser.modules.includes(module.name)))
+					.concat(this.defaultMenuItems.slice(1, 2));
+			} else {
+				return this.defaultMenuItems;
+			}
 		},
   },
 };
@@ -154,7 +156,7 @@ export default {
 	left: 50%;
 	top: 93%;
 	transform: translate(-50%, -50%);
-	z-index: 99999999;
+	z-index: 999;
 }
 .v-application .pa-3 {
 	padding: 14px !important;

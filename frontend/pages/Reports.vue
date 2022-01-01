@@ -4,7 +4,7 @@
 
 <script>
 export default {
-	middleware: ['authenticated'],
+	middleware: ['authenticated', 'reports'],
 	data() {
 		return {
 

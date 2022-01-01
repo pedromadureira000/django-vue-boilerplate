@@ -1,5 +1,5 @@
 import {eraseCookie, setCookie} from '../functions'
-import {user} from './db_user'
+import {user, admin, users} from './db_user'
 
 function mockasync (data) {
   return new Promise((resolve, reject) => {
@@ -7,9 +7,9 @@ function mockasync (data) {
   })
 }
 
-function mockasyncerror () {
+function mockasyncerror (message = 'Something went wrong') {
   return new Promise((resolve, reject) => {
-    setTimeout(() => reject(new Error('Something went wrong')), 600)
+    setTimeout(() => reject(new Error(message)), 600)
   })
 }
 
@@ -25,10 +25,12 @@ export default {
 
 	login(payload){ 
 		if (typeof payload.email === 'string' && typeof payload.password === 'string' && typeof payload.csrftoken === 'string'){
-		// if (true){
-// console.log(typeof payload.email === 'string' && typeof payload.password === 'string' && payload.csrftoken )
+		if (payload.email === "admin@admin.com"){
+			return mockasync(admin)
+		}else{
 			setCookie('sessionid', 'anothertoken', 1)
 			return mockasync(user)
+		}
 		}else {
 			mockasyncerror()
 		}
@@ -76,4 +78,25 @@ export default {
 			mockasyncerror()
 		}
 	},
+
+	createUser(payload){
+		if (typeof payload.first_name === 'string' && typeof payload.last_name === 'string' &&
+				typeof payload.email === 'string' && typeof payload.password === 'string'  
+				)
+				{
+					delete payload.password	
+					return mockasync(payload)	
+				}
+		else {
+			mockasyncerror("createUser Error")
+		}
+	},
+
+	fetchUsersByAdmin(){
+		return mockasync(users)
+	},
+
+	deleteUserByAdmin(id){
+		return mockasync('ok')	
+	}
 }

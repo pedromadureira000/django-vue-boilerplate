@@ -7,11 +7,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_cpf_cnpj.fields import CPFField, CNPJField
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from rest_framework.authtoken.models import Token
-from settings import settings
-
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -87,7 +82,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     company = models.ForeignKey('Company', blank=True, on_delete=models.PROTECT, null=True, verbose_name="Empresa")
     is_admin_agent = models.BooleanField(default=False)
     all_api_permissions = models.BooleanField(default=False)
-    modules = [{"title": "reports", "icon":"mdi-clipboard-list-outline", "to": "/reports"}]
 
     is_staff = models.BooleanField(
         _('staff status'),
@@ -159,8 +153,11 @@ class Company(models.Model):
         return f'Empresa: {self.name}'
 
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)  # every time a user was created, a token will be generated fo that user.
+class LoggedInUser(models.Model):
+    #  user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='logged_in_user', on_delete=models.CASCADE)
+    # Session keys are 32 characters long
+    session_key = models.CharField(max_length=32, null=True, blank=True)
 
+    def __str__(self):
+        return self.user.first_name

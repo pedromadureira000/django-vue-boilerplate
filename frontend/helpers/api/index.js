@@ -40,6 +40,7 @@ export default {
 					return request.data 
 				})
 	},
+
 	async updatePassword(payload){
 		return await axios({ 
 		method: "put",
@@ -52,6 +53,7 @@ export default {
 					return request.data 
 				})
 	},
+
 	async passwordReset(email){
       return await axios({
         method: "post",
@@ -60,6 +62,7 @@ export default {
       })
         .then(() => {})
 	},
+
 	async passwordResetConfirm(payload){
       return await axios({
         method: "post",
@@ -68,7 +71,38 @@ export default {
       })
         .then(() => {})
 				.catch((error) => {return {error: 'error', message: Object.values(error.response.data)[0][0]}})
+	},
+
+	async createUser(payload){
+		return await axios({ 
+		method: "post",
+		url: "/api/user/createuser",
+		data:{
+			first_name: payload.first_name,
+			last_name: payload.last_name,
+			email: payload.email,
+			password: payload.password 
+		}
+			}).then((request) => {
+					return request.data 
+				})
+	},
+
+	async fetchUsersByAdmin(){
+		return await axios({ 
+		method: "get",
+		url: "/api/user/getusers",
+			}).then((request) => {
+					return request.data 
+				})
+	},
+
+	async deleteUserByAdmin(id){
+		return await axios({ 
+		method: "delete",
+		url: `/api/user/delete/${id}`,
+			}).then((request) => {
+					return request.data 
+				})
 	}
-
-
 }

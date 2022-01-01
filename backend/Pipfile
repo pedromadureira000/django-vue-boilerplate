@@ -4,23 +4,23 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+# django = "==3.1"
 django = "*"
 python-decouple = "*"
 dj-database-url = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
-# Logs
 sentry-sdk = "*"
-# Email with mailgun
 django-anymail = "*"
-# Drf
+# djangorestframework = "==3.12"
 djangorestframework = "*"
 djoser = "*"
-# Security and permissions
 django-axes = "*"
 django-role-permissions = "*"
-# Other optional packages
 django-cpf-cnpj = "*"
+drf-yasg = "*"
+# django-s3-folder-storage = "*"
+# pyjwt = "*"
 
 [dev-packages]
 # pytest = "*"
@@ -32,6 +32,7 @@ ipython = "*"
 django-extensions = "*"
 neovim = "*"
 faker = "*"
+ropevim = "*"
 
 [requires]
 python_version = "3.9"

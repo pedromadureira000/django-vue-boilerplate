@@ -1,3 +1,5 @@
+import {Commit, Dispatch} from "vuex"
+
 export const doesHttpOnlyCookieExist = (cookiename: string): boolean => {
 	var d = new Date();
 	d.setTime(d.getTime() + (1000));
@@ -29,4 +31,11 @@ export const getCookie = (name: string) => {
 
 export const eraseCookie = (name: string) => {   
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+export const handleError = (response: any, commit: Commit) => {
+	console.log('>>>>>>>>>> handlerror: ', response)
+	if (response.data ===  "Session already open."){
+		commit("toggleSessionError")
+	}
 }

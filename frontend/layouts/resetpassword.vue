@@ -39,7 +39,7 @@ export default {
 	left: 50%;
 	top: 93%;
 	transform: translate(-50%, -50%);
-	z-index: 99999999;
+	z-index: 999;
 }
 .v-application .pa-3 {
 	padding: 14px !important;

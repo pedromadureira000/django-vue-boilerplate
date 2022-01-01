@@ -63,7 +63,7 @@ export default {
   },
 
   methods: {
-    open () {
+    open() {
       this.visible = true
     },
     close () {

@@ -41,11 +41,13 @@ AUTH_USER_MODEL = 'core.User'
 
 ROLEPERMISSIONS_MODULE = 'core.roles'
 
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000'] 
 
 # Application definition
 
 INSTALLED_APPS = [
     'core',
+    #  'core.apps.CoreConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,12 +56,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'anymail',
-    'axes',
+    #  'axes',
     'rest_framework',
     'djoser',
     'rest_framework.authtoken',
     'rolepermissions',
     'django_cpf_cnpj',
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
@@ -68,9 +71,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'core.middleware.OneSessionPerUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'axes.middleware.AxesMiddleware',
+    #  'axes.middleware.AxesMiddleware',
 ]
 
 ROOT_URLCONF = 'settings.urls'
@@ -93,7 +97,7 @@ TEMPLATES = [
 
 AUTHENTICATION_BACKENDS = [
     # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
-    'axes.backends.AxesBackend',
+    #  'axes.backends.AxesBackend',
 
     # Django ModelBackend is the default authentication backend.
     'django.contrib.auth.backends.ModelBackend',
@@ -101,7 +105,7 @@ AUTHENTICATION_BACKENDS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication', 'rest_framework.authentication.TokenAuthentication'
+        'rest_framework.authentication.SessionAuthentication', #'rest_framework.authentication.TokenAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -220,6 +224,37 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
+##  storage configuration in S3 AWS
+
+#  AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+
+#  if AWS_ACCESS_KEY_ID:
+    #  STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    #  INSTALLED_APPS.append('s3_folder_storage')
+    #  INSTALLED_APPS.append('storages')
+    #  AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+    #  AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+    #  AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400', }
+    #  AWS_PRELOAD_METADATA = True
+    #  AWS_AUTO_CREATE_BUCKET = False
+    #  AWS_QUERYSTRING_AUTH = True
+    #  AWS_S3_CUSTOM_DOMAIN = None
+    #  AWS_DEFAULT_ACL = 'private'
+
+##    ---/Upload Media Folder
+
+    #  DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
+    #  DEFAULT_S3_PATH = 'media'
+    #  MEDIA_ROOT = f'/{DEFAULT_S3_PATH}/'
+    #  MEDIA_URL = f'//{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{DEFAULT_S3_PATH}/'
+
+ ##   -----/Static assets
+
+    #  STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
+    #  STATIC_S3_PATH = 'static'
+    #  STATIC_ROOT = f'/{STATIC_S3_PATH}/'
+    #  STATIC_URL = f'//{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{STATIC_S3_PATH}/'
+    #  ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 
 # axex
 AXES_FAILURE_LIMIT = 5
